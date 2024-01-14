@@ -1,19 +1,22 @@
 public class Player {
-    int beer = 0;
-    int handcuff = 0;
-    int cig = 0;
-    int saw = 0;
-    int glass = 0;
-    int itemUse = beer + cig + handcuff + saw + glass;
-    int playerID;
-    int health = 10;
-    int currentPlayer;
-    Boolean doubleDamage = false;
-    Boolean handcuffed = false;
-    Player[] players = new Player[2];
+    protected int playerID;
+    protected int health = 10;
+    protected int beer = 0;
+    protected int handcuff = 0;
+    protected int cig = 0;
+    protected int saw = 0;
+    protected int glass = 0;
+    protected int itemUse = beer + cig + handcuff + saw + glass;
+    protected int currentPlayer = 0;
+    protected Boolean doubleDamage = false;
+    protected Boolean handcuffed = false;
+    protected Player[] players = new Player[2];
 
-    public Player(int playerID) {
-        this.playerID = playerID;
+    public void createPlayers() {
+        players[0] = new Player();
+        players[0].playerID = 1;
+        players[1] = new Player();
+        players[1].playerID = 2;
     }
 
     public void getHealth() {
@@ -21,6 +24,13 @@ public class Player {
         for (int i = 0; i < health; i++) {
             System.out.print("|");
         }
+    }
+
+    public void getPlayerStatus() {
+        players[0].getHealth();
+        System.out.println();
+        players[1].getHealth();
+        System.out.println();
     }
 
     public int otherPlayer() {
@@ -37,12 +47,5 @@ public class Player {
         } else if (currentPlayer == 1) {
             currentPlayer = 0;
         }
-    }
-
-    public void getPlayerStatus() {
-        players[0].getHealth();
-        System.out.println();
-        players[1].getHealth();
-        System.out.println();
     }
 }
