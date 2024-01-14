@@ -1,13 +1,13 @@
 public class Player {
-    protected int playerID;
-    protected int health = 10;
     protected int beer = 0;
     protected int handcuff = 0;
     protected int cig = 0;
     protected int saw = 0;
     protected int glass = 0;
     protected int itemUse = beer + cig + handcuff + saw + glass;
-    protected int currentPlayer = 0;
+    protected int playerID;
+    protected int health = 10;
+    protected int currentPlayer;
     protected Boolean doubleDamage = false;
     protected Boolean handcuffed = false;
     protected Player[] players = new Player[2];
