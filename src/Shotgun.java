@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class Shotgun extends Player {
     public Shotgun(int playerID) {
         super(playerID);
-        // TODO Auto-generated constructor stub
     }
 
     static Scanner scn = new Scanner(System.in);
@@ -14,6 +13,10 @@ public class Shotgun extends Player {
     private int liveRounds;
     private int blanks;
     private int chamberIndex = 0;
+    private int firedRounds = 0;
+    private int rounds;
+    private int roundStartBlanks;
+    private int roundStartLives;
     private int difficulty = 0;
 
     public int getBullets() {
@@ -30,15 +33,14 @@ public class Shotgun extends Player {
     }
 
     public void load(int bullets) {
-        difficulty += 5;
         this.bullets = bullets;
         chambers = new boolean[bullets];
         blanks = 0;
         chamberIndex = 0;
         liveRounds = 0;
         for (int i = 0; i < bullets; i++) {
-            int type = rand.nextInt(11 + difficulty);
-            if (type % 2 == 0) {
+            int type = rand.nextInt(4 - difficulty);
+            if (type == 0) {
                 chambers[i] = true;
                 liveRounds++;
             } else {
@@ -49,11 +51,13 @@ public class Shotgun extends Player {
         if (liveRounds == 0 || blanks == 0) {
             load(bullets);
         }
+        roundStartBlanks = this.blanks;
+        roundStartLives = this.liveRounds;
     }
 
     public void getCurrentChamber() {
-        System.out.println(this.blanks + " blank(s)");
-        System.out.println(this.liveRounds + " live round(s)");
+        System.out.println(roundStartBlanks + " blank(s)");
+        System.out.println(roundStartLives + " live round(s)");
     }
 
     public Boolean fire() {
@@ -76,6 +80,9 @@ public class Shotgun extends Player {
             }
         } catch (GameOver e) {
             System.out.println("Player " + (players[currentPlayer].playerID) + " suck big dick");
+            System.out.println("//Live rounds fired: " + firedRounds + "//");
+            System.out.println(
+                    "//Player " + (players[otherPlayer()].playerID) + " survived until Round " + (rounds + 1) + "//");
             System.exit(0);
         }
         try {
@@ -84,6 +91,9 @@ public class Shotgun extends Player {
             }
         } catch (GameOver e) {
             System.out.println("//Player " + (players[otherPlayer()].playerID) + " suck big dick//");
+            System.out.println("//Live rounds fired: " + firedRounds + "//");
+            System.out.println(
+                    "//Player " + (players[currentPlayer].playerID) + " survived until Round " + (rounds + 1) + "//");
             System.exit(0);
         }
     }
@@ -92,16 +102,16 @@ public class Shotgun extends Player {
         if (players[currentPlayer].itemUse < 0) {
             players[currentPlayer].itemUse = 0;
         }
-        System.out.println("//Player " + players[currentPlayer].playerID + " has: //");
+        System.out.println("//Player " + players[currentPlayer].playerID + " has:");
         System.out.println(players[currentPlayer].beer + " beer(s)");
         System.out.println(players[currentPlayer].handcuff + " handcuff(s)");
         System.out.println(players[currentPlayer].cig + " cig(s)");
         System.out.println(players[currentPlayer].saw + " saw(s)");
-        System.out.println(players[currentPlayer].glass + " glass(es)");
+        System.out.println(players[currentPlayer].glass + " glass(es)//");
     }
 
     public void noItems() {
-        System.out.println("//Player " + players[currentPlayer].playerID + " is out of items//");
+        System.out.println("//Player " + players[currentPlayer].playerID + " does not have that item//");
     }
 
     public Boolean itemCheck(int item) {
@@ -121,34 +131,19 @@ public class Shotgun extends Player {
             System.out.print("Player " + players[currentPlayer].playerID + " input: ");
             String cmd = scn.nextLine();
             switch (cmd) {
-                case "health":
-                    clearScreen();
-                    getPlayerStatus();
-                    break;
                 case "chamber":
                     clearScreen();
                     getCurrentChamber();
                     break;
                 case "me": // shoot yourself
+                    clearScreen();
                     if (this.fire()) {
-                        clearScreen();
-                        if (!players[currentPlayer].doubleDamage) {
-                            System.out.println("Bang!");
-                            players[currentPlayer].health--;
-                        }
-                        if (players[currentPlayer].doubleDamage) {
-                            System.out.println("BANG!!!");
-                            players[currentPlayer].doubleDamage = false;
-                            players[currentPlayer].health -= 2;
-                        }
+                        System.out.println("Bang!");
+                        players[currentPlayer].health--;
                         liveRounds--;
-                        if (!players[otherPlayer()].handcuffed) {
-                            switchPlayer();
-                        } else {
-                            players[otherPlayer()].handcuffed = false;
-                        }
+                        switchPlayer();
+                        firedRounds++;
                     } else {
-                        clearScreen();
                         System.out.println("Click!");
                         players[currentPlayer].doubleDamage = false;
                         blanks--;
@@ -157,23 +152,14 @@ public class Shotgun extends Player {
                     getPlayerStatus();
                     break;
                 case "you": // shoot other player
+                    clearScreen();
                     if (this.fire()) {
-                        clearScreen();
-                        if (!players[currentPlayer].doubleDamage) {
-                            System.out.println("Bang!");
-                            players[otherPlayer()].health--;
-                        }
-                        if (players[currentPlayer].doubleDamage) {
-                            System.out.println("BANG!!!");
-                            players[otherPlayer()].health -= 2;
-                            players[currentPlayer].doubleDamage = false;
-                        }
+                        System.out.println("Bang!");
+                        players[otherPlayer()].health--;
                         liveRounds--;
-
+                        firedRounds++;
                     } else {
-                        clearScreen();
                         System.out.println("Click!");
-                        players[currentPlayer].doubleDamage = false;
                         blanks--;
                     }
                     gameOverCheck();
@@ -193,17 +179,14 @@ public class Shotgun extends Player {
             if (liveRounds == 0) {
                 break;
             }
+            viewItems();
             System.out.println(getTurn());
             System.out.print("Player " + players[currentPlayer].playerID + " input: ");
             String cmd = scn.nextLine();
             switch (cmd) {
-                case "items":
+                case "info":
                     clearScreen();
-                    viewItems();
-                    break;
-                case "health":
-                    clearScreen();
-                    getPlayerStatus();
+                    itemInfo();
                     break;
                 case "chamber":
                     clearScreen();
@@ -227,6 +210,7 @@ public class Shotgun extends Player {
                         } else {
                             players[otherPlayer()].handcuffed = false;
                         }
+                        firedRounds++;
                     } else {
                         clearScreen();
                         System.out.println("Click!");
@@ -237,8 +221,8 @@ public class Shotgun extends Player {
                     getPlayerStatus();
                     break;
                 case "you": // shoot other player
+                    clearScreen();
                     if (this.fire()) {
-                        clearScreen();
                         if (!players[currentPlayer].doubleDamage) {
                             System.out.println("Bang!");
                             players[otherPlayer()].health--;
@@ -249,9 +233,9 @@ public class Shotgun extends Player {
                             players[currentPlayer].doubleDamage = false;
                         }
                         liveRounds--;
+                        firedRounds++;
 
                     } else {
-                        clearScreen();
                         System.out.println("Click!");
                         players[currentPlayer].doubleDamage = false;
                         blanks--;
@@ -268,10 +252,10 @@ public class Shotgun extends Player {
                     clearScreen();
                     if (itemCheck(players[currentPlayer].beer)) {
                         if (chambers[chamberIndex]) {
-                            System.out.println("Ejected a live round");
+                            System.out.println("Ejected a live shell");
                             liveRounds--;
                         } else {
-                            System.out.println("Ejected a blank");
+                            System.out.println("Ejected a blank shell");
                             blanks--;
                         }
                         chamberIndex++;
@@ -284,9 +268,9 @@ public class Shotgun extends Player {
                     clearScreen();
                     if (itemCheck(players[currentPlayer].glass)) {
                         if (chambers[chamberIndex]) {
-                            System.out.println("The round in the chamber is live");
+                            System.out.println("The shell in the chamber is live");
                         } else {
-                            System.out.println("The round in the chamber is blank");
+                            System.out.println("The shell in the chamber is blank");
                         }
                         players[currentPlayer].glass--;
                     } else {
@@ -333,38 +317,48 @@ public class Shotgun extends Player {
         clearScreen();
         System.out.println("//Welcome to Text Roulette//");
         System.out.println("//This game is played with 2 players//");
-        System.out.println("//There are blanks and live rounds, loaded in random order//");
+        System.out.println("//There are blanks and live shells, loaded in random order//");
         System.out.println("//Type 'me' to shoot yourself//");
         System.out.println("//Type 'you' to shoot the other player//");
         System.out.println("//Shooting yourself with a blank will skip the other player's turn//");
-        System.out.println("//Type 'check' to view which rounds are left//");
-        System.out.println("//Type 'health' to view both players' health//");
+        System.out.println("//Type 'chamber' to view number of live and blank shells at round start//");
         System.out.println("//The first player will be Player 1//");
     }
 
-    public void gameLogic() throws GameOver {
-        for (int i = 2; i >= 0; i++) {
+    public void itemInfo() {
+        System.out.println("//'beer': ejects a shell //");
+        System.out.println("//'glass': views the current shell in the chamber//");
+        System.out.println("//'cig': heals for 1 health//");
+        System.out.println("//'saw': next shotgun blast will deal 2 damage//");
+        System.out.println("//'handcuff': skips the other player turn//");
+    }
 
-            System.out.println("---ROUND " + (i + 1) + "---");
-            if (i == 2) {
+    public void gameLogic() throws GameOver {
+        for (rounds = 0; rounds >= 0; rounds++) {
+            System.out.println("---ROUND " + (rounds + 1) + "---");
+            if (rounds == 2) {
                 System.out.println("//From this round, each player will receive 2 random items every round start//");
                 System.out.println("//Items can be carried over to next round, up to 6//");
-                System.out.println("//Type 'items' to view how many items are left //");
+                System.out.println("//Type 'info' to view items' description again//");
                 System.out.println("//Type the item's name to use//");
-                System.out.println("//'beer': ejects a round //");
+                System.out.println("//'beer': ejects a shell //");
                 System.out.println("//'glass': views the current round in the chamber//");
                 System.out.println("//'cig': heals for 1 health//");
                 System.out.println("//'saw': next shotgun blast will deal 2 damage//");
                 System.out.println("//'handcuff': skips the other player turn//");
             }
-            setBullets(2 + i);
+            setBullets(3 + rounds);
+            if (getBullets() > 8) {
+                setBullets(8);
+                difficulty = 2;
+            }
             load(getBullets());
             getPlayerStatus();
             getCurrentChamber();
-            if (i < 2) {
+            if (rounds < 2) {
                 shotgunBehavior();
             }
-            if (i >= 2) {
+            if (rounds >= 2) {
                 for (int j = 0; j < 2; j++) {
                     if (players[0].itemUse >= 6) {
                         break;

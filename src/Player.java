@@ -6,7 +6,7 @@ public class Player {
     int glass = 0;
     int itemUse = beer + cig + handcuff + saw + glass;
     int playerID;
-    int health = 4;
+    int health = 10;
     int currentPlayer;
     Boolean doubleDamage = false;
     Boolean handcuffed = false;
