@@ -1,10 +1,8 @@
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Shotgun extends Player {
-    public Shotgun(int playerID) {
-        super(playerID);
-    }
 
     static Scanner scn = new Scanner(System.in);
     private Random rand = new Random();
@@ -21,11 +19,6 @@ public class Shotgun extends Player {
 
     public int getBullets() {
         return bullets;
-    }
-
-    public void createPlayers() {
-        players[0] = new Player(1);
-        players[1] = new Player(2);
     }
 
     public void setBullets(int bullets) {
@@ -131,6 +124,11 @@ public class Shotgun extends Player {
             System.out.print("Player " + players[currentPlayer].playerID + " input: ");
             String cmd = scn.nextLine();
             switch (cmd) {
+                case "cmd": {
+                    clearScreen();
+                    viewCommands();
+                    break;
+                }
                 case "chamber":
                     clearScreen();
                     getCurrentChamber();
@@ -149,7 +147,6 @@ public class Shotgun extends Player {
                         blanks--;
                     }
                     gameOverCheck();
-                    getPlayerStatus();
                     break;
                 case "you": // shoot other player
                     clearScreen();
@@ -163,7 +160,6 @@ public class Shotgun extends Player {
                         blanks--;
                     }
                     gameOverCheck();
-                    getPlayerStatus();
                     if (!players[otherPlayer()].handcuffed) {
                         switchPlayer();
                     } else {
@@ -171,6 +167,7 @@ public class Shotgun extends Player {
                     }
                     break;
             }
+            getPlayerStatus();
         }
     }
 
@@ -184,6 +181,11 @@ public class Shotgun extends Player {
             System.out.print("Player " + players[currentPlayer].playerID + " input: ");
             String cmd = scn.nextLine();
             switch (cmd) {
+                case "cmd": {
+                    clearScreen();
+                    viewCommands();
+                    break;
+                }
                 case "info":
                     clearScreen();
                     itemInfo();
@@ -313,8 +315,13 @@ public class Shotgun extends Player {
         }
     }
 
-    public void welcomeText() {
-        clearScreen();
+    public void viewCommands() {
+        System.out.println("//Type 'chamber' to view number of live and blank shells at round start//");
+        System.out.println("//Type 'me' to shoot yourself//");
+        System.out.println("//Type 'you' to shoot the other player//");
+    }
+
+    public static void welcomeText() {
         System.out.println("//Welcome to Text Roulette//");
         System.out.println("//This game is played with 2 players//");
         System.out.println("//There are blanks and live shells, loaded in random order//");
@@ -322,6 +329,7 @@ public class Shotgun extends Player {
         System.out.println("//Type 'you' to shoot the other player//");
         System.out.println("//Shooting yourself with a blank will skip the other player's turn//");
         System.out.println("//Type 'chamber' to view number of live and blank shells at round start//");
+        System.out.println("//Type 'cmd' to view list of basic commands//");
         System.out.println("//The first player will be Player 1//");
     }
 
@@ -420,7 +428,16 @@ public class Shotgun extends Player {
     }
 
     public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        try {
+
+            if (System.getProperty("os.name").contains("Windows"))
+                new ProcessBuilder("cmd", "/c",
+                        "cls").inheritIO().start().waitFor();
+            else
+                Runtime.getRuntime().exec("clear");
+        } catch (IOException | InterruptedException ex) {
+        }
+
     }
+
 }
