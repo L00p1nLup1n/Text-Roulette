@@ -1,1 +1,1 @@
----To run the game, open src and compile the main class---
+---To run the game, open Text-Roulette.bat---
