@@ -1,10 +1,8 @@
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Shotgun extends Player {
-    public Shotgun(int playerID) {
-        super(playerID);
-    }
 
     static Scanner scn = new Scanner(System.in);
     private Random rand = new Random();
@@ -21,11 +19,6 @@ public class Shotgun extends Player {
 
     public int getBullets() {
         return bullets;
-    }
-
-    public void createPlayers() {
-        players[0] = new Player(1);
-        players[1] = new Player(2);
     }
 
     public void setBullets(int bullets) {
@@ -420,7 +413,15 @@ public class Shotgun extends Player {
     }
 
     public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        try {
+
+            if (System.getProperty("os.name").contains("Windows"))
+                new ProcessBuilder("cmd", "/c",
+                        "cls").inheritIO().start().waitFor();
+            else
+                Runtime.getRuntime().exec("clear");
+        } catch (IOException | InterruptedException ex) {
+        }
+
     }
 }
