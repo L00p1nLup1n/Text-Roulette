@@ -1,8 +1,13 @@
 public class Player {
+    int beer = 0;
+    int handcuff = 0;
+    int cig = 0;
+    int saw = 0;
+    int glass = 0;
+    int itemUse = beer + cig + handcuff + saw + glass;
     int playerID;
     int health = 4;
     int currentPlayer;
-    int itemUse = 0;
     Boolean doubleDamage = false;
     Boolean handcuffed = false;
     Player[] players = new Player[2];
@@ -40,5 +45,4 @@ public class Player {
         players[1].getHealth();
         System.out.println();
     }
-
 }
