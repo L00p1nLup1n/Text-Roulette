@@ -41,6 +41,11 @@ public class Shotgun extends Player {
                 blanks++;
             }
         }
+        if (bullets >= 5) {
+            if (liveRounds == 0 || blanks == 0 || liveRounds == 1 || blanks == 1) {
+                load(bullets);
+            }
+        }
         if (liveRounds == 0 || blanks == 0) {
             load(bullets);
         }
@@ -92,9 +97,6 @@ public class Shotgun extends Player {
     }
 
     public void viewItems() {
-        if (players[currentPlayer].itemUse < 0) {
-            players[currentPlayer].itemUse = 0;
-        }
         System.out.println("//Player " + players[currentPlayer].playerID + " has:");
         System.out.println(players[currentPlayer].beer + " beer(s)");
         System.out.println(players[currentPlayer].handcuff + " handcuff(s)");
@@ -117,7 +119,7 @@ public class Shotgun extends Player {
 
     public void shotgunBehavior() throws GameOver {
         while (this.chamberIndex <= this.bullets - 1) {
-            if (liveRounds == 0) {
+            if (liveRounds == 0 && blanks != 1) {
                 break;
             }
             System.out.println(getTurn());
@@ -173,7 +175,7 @@ public class Shotgun extends Player {
 
     public void shotgunBehaviorWithItems() throws GameOver {
         while (this.chamberIndex <= this.bullets - 1) {
-            if (liveRounds == 0) {
+            if (liveRounds == 0 && blanks != 1) {
                 break;
             }
             viewItems();
@@ -344,9 +346,9 @@ public class Shotgun extends Player {
     public void gameLogic() throws GameOver {
         for (rounds = 0; rounds >= 0; rounds++) {
             System.out.println("---ROUND " + (rounds + 1) + "---");
-            if (rounds == 2) {
+            if (rounds == 1) {
                 System.out.println("//From this round, each player will receive 2 random items every round start//");
-                System.out.println("//Items can be carried over to next round, up to 6//");
+                System.out.println("//Items can be carried over to next round, up to 8//");
                 System.out.println("//Type 'info' to view items' description again//");
                 System.out.println("//Type the item's name to use//");
                 System.out.println("//'beer': ejects a shell //");
@@ -354,6 +356,9 @@ public class Shotgun extends Player {
                 System.out.println("//'cig': heals for 1 health//");
                 System.out.println("//'saw': next shotgun blast will deal 2 damage//");
                 System.out.println("//'handcuff': skips the other player turn//");
+            }
+            if (rounds == 4) {
+                System.out.println("//Each player will get 4 items from this round//");
             }
             setBullets(3 + rounds);
             if (getBullets() > 8) {
@@ -363,22 +368,38 @@ public class Shotgun extends Player {
             load(getBullets());
             getPlayerStatus();
             getCurrentChamber();
-            if (rounds < 2) {
+            if (rounds < 1) {
                 shotgunBehavior();
             }
-            if (rounds >= 2) {
-                for (int j = 0; j < 2; j++) {
-                    if (players[0].itemUse >= 6) {
-                        break;
+            if (rounds >= 1) {
+                if (rounds >= 4) {
+                    for (int j = 0; j < 4; j++) {
+                        if (players[0].itemUse >= 8) {
+                            break;
+                        }
+                        generateItemsP1();
                     }
-                    generateItemsP1();
-                }
 
-                for (int j = 0; j < 2; j++) {
-                    if (players[1].itemUse >= 6) {
-                        break;
+                    for (int j = 0; j < 4; j++) {
+                        if (players[1].itemUse >= 8) {
+                            break;
+                        }
+                        generateItemsP2();
                     }
-                    generateItemsP2();
+                } else {
+                    for (int j = 0; j < 2; j++) {
+                        if (players[0].itemUse >= 8) {
+                            break;
+                        }
+                        generateItemsP1();
+                    }
+
+                    for (int j = 0; j < 2; j++) {
+                        if (players[1].itemUse >= 8) {
+                            break;
+                        }
+                        generateItemsP2();
+                    }
                 }
                 shotgunBehaviorWithItems();
             }

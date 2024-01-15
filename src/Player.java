@@ -20,7 +20,7 @@ public class Player {
     }
 
     public void getHealth() {
-        System.out.print("Player " + playerID + ": ");
+        System.out.print("Player " + playerID + " HP: ");
         for (int i = 0; i < health; i++) {
             System.out.print("|");
         }
