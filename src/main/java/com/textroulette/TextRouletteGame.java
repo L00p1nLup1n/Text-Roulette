@@ -1,9 +1,11 @@
+package com.textroulette;
 import java.util.Scanner;
 
-public class App {
+public class TextRouletteGame {
 
     public static void main(String[] args) throws Exception {
         Display frame = new Display();
+        @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
         GameLogic gameLogic = new GameLogic();
         Display.clearScreen();

@@ -1,18 +1,19 @@
-## Getting Started
+# Text-Roulette
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+A 2-player, text-based version of Buckshot Roulette.
 
-## Folder Structure
+## Requirements
+- Java 8 or higher
+- Maven 3.6+
 
-The workspace contains two folders by default, where:
+## Build & Run
+```bash
+# Clone repository
+git clone https://github.com/L00p1nLup1n/Text-Roulette.git
+cd Text-Roulette
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+# Build fat JAR
+mvn clean package
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+# Run the game
+java -jar target/text-roulette-1.0.0.jar

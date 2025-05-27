@@ -1,3 +1,5 @@
+package com.textroulette;
+
 public class Items {
 
     public String beer(Shotgun shotgun) {
