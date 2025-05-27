@@ -1,7 +1,8 @@
-import java.util.*;
+// Remove or update the package declaration if the directory structure does not match.
+// If your file is NOT in src\main\java\com\textroulette, either move it there or update the package below accordingly.
+package com.textroulette;
 
 public class GameLogic {
-    static Scanner scn = new Scanner(System.in);
     public Player player = new Player();
     public Player[] players = new Player[2];
     public int currentPlayer = 0;
