@@ -14,6 +14,10 @@ public class Player {
     protected int health = 5;
     protected Boolean handcuffed = false;
 
+    public Player(int playerID) {
+        this.playerID = playerID;
+    }
+    
     public int getHealth() {
         return this.health;
     }
