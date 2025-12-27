@@ -4,7 +4,7 @@ namespace Text_Roulette.code.Models
     {
         public enum itemName
         {
-            beer ,
+            beer,
             glass,
             cig,
             saw,
@@ -12,8 +12,8 @@ namespace Text_Roulette.code.Models
         }
 
 
-        public string itemEffect(string itemUsed) 
-        {   
+        public string itemEffect(string itemUsed)
+        {
             switch (itemUsed)
             {
                 case "beer":
@@ -23,6 +23,6 @@ namespace Text_Roulette.code.Models
             return "no";
         }
 
-        
+
     }
 }

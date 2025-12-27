@@ -5,11 +5,11 @@ namespace Text_Roulette.code.Models
         private readonly Random generator = new();
         public Stack<bool> chamber = new();
         protected int bullets = 0;
-        protected int liveRounds;
-        protected int blanks;
-        protected int firedRounds;
+        public int liveRounds;
+        public int blanks;
+        public int firedRounds;
         public int difficulty = 0;
-        protected bool isSawnOff = false;
+        public bool isSawnOff = false;
         public bool isLiveFired;
 
         public int GetBullets()
@@ -116,7 +116,7 @@ namespace Text_Roulette.code.Models
 
         public bool IsEmpty()
         {
-            return chamber.Capacity == 0;
+            return chamber.Count == 0;
         }
     }
 
