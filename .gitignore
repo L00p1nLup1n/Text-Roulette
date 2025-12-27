@@ -1,24 +1,46 @@
 # Compiled class files
 *.class
-
+# Build results
+[Bb]in/
+[Oo]bj/
 # Log files
 *.log
-
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.cache
+*.xml
 # BlueJ files
 *.ctxt
-
+# VS Code
+.vscode/
 # Package Files #
 *.jar
-
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 # Maven target directory
 /target/
-
+# OS generated files
+.DS_Store
+.DS_Store?
 # IntelliJ IDEA
 /.idea/
 *.iml
-
+# JetBrains
+.idea/
+*.sln.iml
 # Eclipse
 /.settings/
+# Editors
+.zed
+.settings/
 *.classpath
 *.project
 .zed
