@@ -21,12 +21,12 @@ namespace Text_Roulette.code.Models
 
         public enum GunStateEnum
         {
-            blankFired,
-            liveFired,
+            standard,
             isBlank,
             isLive,
             sawnOffIsBlank,
-            sawnOffIsLive
+            sawnOffIsLive,
+            sawnOff
         }
         public GunStateEnum GunState;
 

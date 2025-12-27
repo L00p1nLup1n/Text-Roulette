@@ -93,7 +93,7 @@ namespace Text_Roulette.code.Views
             // Create the main window
 
 
-            var mainWindow = new Window("Text Roulette")
+            var mainWindow = new Window()
             {
                 X = 0,
                 Y = 0,
@@ -116,7 +116,7 @@ namespace Text_Roulette.code.Views
             var banner = new Label(logo)
             {
                 X = Pos.Center(),
-                Y = 10
+                Y = Pos.Center() - 8
             };
             mainWindow.Add(banner);
 
@@ -124,15 +124,28 @@ namespace Text_Roulette.code.Views
             var label = new Label("Welcome to Text Roulette, type 'start' to begin")
             {
                 X = Pos.Center(),     // Center the label horizontally
-                Y = Pos.Bottom(banner) + 2
+                Y = Pos.Bottom(banner) + 1
             };
             mainWindow.Add(label);
 
+            var menuInputLabel = new Label("Enter command:")
+            {
+                X = Pos.Center() - 15,
+                Y = Pos.Bottom(label) + 1
+            };
+            mainWindow.Add(menuInputLabel);
+
             var textField = new TextField("")
             {
-                X = Pos.Center(),
+                X = Pos.Right(menuInputLabel) + 1,
                 Y = Pos.Bottom(label) + 1,
-                Width = 50,
+                Width = 15,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black),
+                    Focus = new Attribute(Color.BrightYellow, Color.Black),
+
+                }
             };
 
             // Create About window
@@ -169,7 +182,7 @@ Press any key to return to main menu...";
             };
 
             // Create game window (initially not added to top)
-            var gameWindow = new Window("Game Started!")
+            var gameWindow = new Window()
             {
                 X = 0,
                 Y = 0,
@@ -177,7 +190,7 @@ Press any key to return to main menu...";
                 Height = Dim.Fill()
             };
 
-            var gameLabel = new Label("Game is now running!")
+            var gameLabel = new Label("Text Roulette")
             {
                 X = 1,
                 Y = 0
@@ -286,7 +299,7 @@ Press any key to return to main menu...";
             };
 
             string shotgun = "";
-            
+
             //             var shotgunAscii = new Label(@"
             //     ___
             //    /   \_______________________________________________
@@ -366,16 +379,22 @@ Press any key to return to main menu...";
             var gameInputLabel = new Label("Enter command:")
             {
                 X = 1,
-                Y = Pos.AnchorEnd(3)
+                Y = Pos.AnchorEnd(2)
             };
             gameWindow.Add(gameInputLabel);
 
             // Add text field for user input in game
             var gameTextField = new TextField("")
             {
-                X = 1,
+                X = Pos.Right(gameInputLabel) + 1,
                 Y = Pos.AnchorEnd(2),
-                Width = Dim.Fill() - 2
+                Width = 15,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black),
+                    Focus = new Attribute(Color.BrightYellow, Color.Black),
+
+                }
             };
 
             // Handle Enter key press in game text field
@@ -405,7 +424,14 @@ Press any key to return to main menu...";
             var quitBtn = new Button("Quit")
             {
                 X = Pos.Center(),
-                Y = Pos.AnchorEnd(1)
+                Y = Pos.AnchorEnd(1),
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    Focus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black),
+                    HotNormal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    HotFocus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black)
+                }
             };
             quitBtn.Clicked += () =>
             {
@@ -440,7 +466,14 @@ Press any key to return to main menu...";
             var btn = new Button("Quit")
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(textField) + 1
+                Y = Pos.Bottom(textField) + 1,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    Focus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black),
+                    HotNormal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    HotFocus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black)
+                }
             };
 
             mainWindow.Add(btn);

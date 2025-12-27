@@ -40,6 +40,7 @@
 //     }
 namespace Text_Roulette.code.Controllers
 {
+    using System.Collections;
     using System.Runtime.InteropServices;
     using Text_Roulette.code.Models;
     using Text_Roulette.code.Views;
@@ -51,22 +52,38 @@ namespace Text_Roulette.code.Controllers
         public StreamReader readerShotgun = new("assets/Shotgun.txt");
         public StreamReader readerShotgunSawnOff = new("assets/ShotgunSawnOff.txt");
 
+        public StreamReader readerShotgunIsBlank = new("assets/ShotgunIsBlank.txt");
+
+        public StreamReader readerShotgunIsLive = new("assets/ShotgunIsLive.txt");
+
+        public StreamReader readerShotgunSawnOffIsBlank = new("assets/ShotgunSawnOffIsBlank.txt");
+
+        public StreamReader readerShotgunSawnOffIsLive = new("assets/ShotgunSawnOffIsLive.txt");
+
         public string shotgun = "";
-        public string ShotgunSawnOff = "";
+        public string shotgunSawnOff = "";
+        public string shotgunIsBlank = "";
 
+        public string shotgunIsLive = "";
 
+        public string shotgunSawnOffIsLive = "";
 
-
+        public string shotgunSawnOffIsBlank = "";
 
         public void StartGame()
         {
             shotgun = readerShotgun.ReadToEnd();
-            // ShotgunSawnOff = readerShotgunSawnOff.ReadToEnd();
+            shotgunSawnOff = readerShotgunSawnOff.ReadToEnd();
+            shotgunIsBlank = readerShotgunIsBlank.ReadToEnd();
+            shotgunIsLive = readerShotgunIsLive.ReadToEnd();
+            shotgunSawnOffIsBlank = readerShotgunSawnOffIsBlank.ReadToEnd();
+            shotgunSawnOffIsLive = readerShotgunSawnOffIsLive.ReadToEnd();
 
             game.createPlayers();
             output.player1Health = game.players[0].GetHealth();
             output.player2Health = game.players[1].GetHealth();
             output.whichPlayerTurn = 0;
+            output.GunState = Output.GunStateEnum.standard;
 
             game.shotgun.Load();
             output.blankRounds = game.shotgun.blanks;
@@ -94,7 +111,8 @@ namespace Text_Roulette.code.Controllers
 
             Display.UpdateOutput(output, game.rounds + 1, game.shotgun.difficulty);
             Display.LogOutput($"{output.message}");
-            Display.UpdateShotgun(readerShotgunSawnOff.ReadToEnd());
+
+            Display.UpdateShotgun(ShotgunRender(output.GunState));
 
             // Reload shotgun if empty
             if (game.shotgun.IsEmpty())
@@ -107,6 +125,31 @@ namespace Text_Roulette.code.Controllers
                 Display.UpdateRoundInfo(game.rounds + 1, output.liveRounds, output.blankRounds, game.shotgun.difficulty);
                 Display.LogOutput("=== New Round Started ===");
             }
+        }
+        public string ShotgunRender(Output.GunStateEnum state)
+        {
+            switch (state)
+            {
+                case Output.GunStateEnum.standard:
+                    return shotgun;
+
+                case Output.GunStateEnum.sawnOff:
+                    return shotgunSawnOff;
+
+                case Output.GunStateEnum.isBlank:
+                    return shotgunIsBlank;
+
+                case Output.GunStateEnum.isLive:
+                    return shotgunIsLive;
+
+                case Output.GunStateEnum.sawnOffIsLive:
+                    return shotgunSawnOffIsLive;
+
+                case Output.GunStateEnum.sawnOffIsBlank:
+                    return shotgunSawnOffIsBlank;
+            }
+            return "**Placeholder**";
+
         }
     }
 }

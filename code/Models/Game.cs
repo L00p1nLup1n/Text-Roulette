@@ -6,8 +6,6 @@ namespace Text_Roulette.code.Models
         public int currentPlayer = 0;
         public int rounds;
         string results = "";
-        string chamberResults = "";
-
         public Shotgun shotgun = new();
 
         public Stack<Items.itemName> inventory = new();
@@ -32,28 +30,46 @@ namespace Text_Roulette.code.Models
                     }
                     else
                     {
-
                         output.whichPlayerTurn = currentPlayer;
                     }
+                    output.GunState = Output.GunStateEnum.standard;
                     break;
                 case "you":
                     results = shotgun.FireAt(players[OtherPlayer()]);
                     output.message = results;
                     output.whichPlayerTurn = OtherPlayer();
                     SwitchPlayer();
+                    output.GunState = Output.GunStateEnum.standard;
                     break;
                 case "cmd":
                     results = "Type 'y' to shoot the other player \n'm' to shoot yourself";
                     output.message = results;
                     break;
+                case "saw":
+                    shotgun.isSawnOff = true;
+                    output.GunState = Output.GunStateEnum.sawnOff;
+                    results = "The barrel is sawn off, dealing 2 damage for 1 turn!";
+                    output.message = results;
+                    break;
+                case "glass":
+                    if (output.GunState == Output.GunStateEnum.sawnOff)
+                    {
+                        output.GunState = (shotgun.ViewCurrentShell() == "Live") ? Output.GunStateEnum.sawnOffIsLive : Output.GunStateEnum.sawnOffIsBlank;
+                    }
+                    else output.GunState = (shotgun.ViewCurrentShell() == "Live") ? Output.GunStateEnum.isLive : Output.GunStateEnum.isBlank;
+                    results = "Player " + players[currentPlayer].playerID + " peeked inside the chamber";
+                    output.message = results;
+                    break;
+
                 default:
                     results = "Invalid input!";
                     output.message = results;
                     break;
             }
-
             output.player1Health = players[0].GetHealth();
             output.player2Health = players[1].GetHealth();
+
+
             return output;
         }
 
