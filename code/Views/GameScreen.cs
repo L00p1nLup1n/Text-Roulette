@@ -1,0 +1,334 @@
+namespace Text_Roulette.code.Views
+{
+    using Terminal.Gui;
+    using Text_Roulette.code.Models;
+
+    class GameScreen
+    {
+        // UI component references
+        private static Label? roundInfoLabel;
+        private static Label? playerStatsLabel;
+        private static Label? turnInfoLabel;
+        private static Label? shotgunLabel;
+        private static Label? messageLabel;
+        private static TextView? outputWindow;
+        private static Input? inputHandler;
+        private static Action? onInputReceived;
+
+        // Set callback for when input is received
+        public static void SetInputCallback(Action callback)
+        {
+            onInputReceived = callback;
+        }
+
+        // UI update methods - API for Controller to use
+        public static void UpdateRoundInfo(int round, int liveRounds, int blankRounds, int difficulty)
+        {
+            if (roundInfoLabel != null)
+                roundInfoLabel.Text = $"Round: {round}\nLive Rounds: {liveRounds}\nBlank Rounds: {blankRounds}";
+        }
+
+        public static void UpdatePlayerStats(int player1Health, int player2Health)
+        {
+            if (playerStatsLabel != null)
+            {
+                string p1Hearts = new string('♥', player1Health);
+                string p2Hearts = new string('♥', player2Health);
+                playerStatsLabel.Text = $"Player 1 : {p1Hearts} \nPlayer 2 : {p2Hearts}";
+            }
+        }
+
+        public static void UpdateTurnInfo(int currentPlayer)
+        {
+            if (turnInfoLabel != null)
+                turnInfoLabel.Text = $"Current Turn: Player {currentPlayer + 1}";
+        }
+
+        public static void UpdateShotgun(string ascii)
+        {
+            if (shotgunLabel != null)
+                shotgunLabel.Text = ascii;
+        }
+
+        public static void UpdateMessage(string message)
+        {
+            if (messageLabel != null)
+                messageLabel.Text = message;
+        }
+
+        public static void UpdateOutput(Output output, int round, int difficulty)
+        {
+            UpdateRoundInfo(round, output.liveRounds, output.blankRounds, difficulty);
+            UpdatePlayerStats(output.player1Health, output.player2Health);
+            UpdateTurnInfo(output.whichPlayerTurn);
+            UpdateMessage(output.message);
+        }
+
+        public static void LogOutput(string message)
+        {
+            if (outputWindow != null)
+                outputWindow.Text += message + "\n";
+        }
+
+        // API for Controller to access input
+        public static Input? GetInput()
+        {
+            return inputHandler;
+        }
+
+        public static Window CreateGameWindow()
+        {
+            // Create game window
+            var gameWindow = new Window()
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Fill(),
+                Height = Dim.Fill()
+            };
+
+            var gameLabel = new Label("Text Roulette")
+            {
+                X = 1,
+                Y = 0
+            };
+            gameWindow.Add(gameLabel);
+
+            // Create fixed-size windows for game information
+
+            // Round Info Window (top)
+            var roundInfoWindow = new FrameView("Round Info")
+            {
+                X = 0,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = 6,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightCyan, Color.Black),
+                    Focus = new Attribute(Color.BrightCyan, Color.Black)
+                }
+            };
+            var roundInfoLabel = new Label("Round: 1\nLive Rounds: 0\nBlank Rounds: 0\nDifficulty: 1")
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightCyan, Color.Black)
+                }
+            };
+            roundInfoWindow.Add(roundInfoLabel);
+            gameWindow.Add(roundInfoWindow);
+
+            // Store reference to static field
+            GameScreen.roundInfoLabel = roundInfoLabel;
+
+            // Player Stats Window (below Round Info)
+            var playerStatsWindow = new FrameView("Player Stats")
+            {
+                X = 0,
+                Y = 7,
+                Width = Dim.Fill(),
+                Height = 5,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightGreen, Color.Black),
+                    Focus = new Attribute(Color.BrightGreen, Color.Black)
+                }
+            };
+            var playerStatsLabel = new Label("Player 1 Health:\nPlayer 2 Health:")
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightGreen, Color.Black)
+                }
+            };
+            playerStatsWindow.Add(playerStatsLabel);
+            gameWindow.Add(playerStatsWindow);
+
+            // Store reference to static field
+            GameScreen.playerStatsLabel = playerStatsLabel;
+
+            // Turn Info Window (below Player Stats)
+            var turnInfoWindow = new FrameView("Turn Info")
+            {
+                X = 0,
+                Y = 12,
+                Width = Dim.Fill(),
+                Height = 4,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightYellow, Color.Black),
+                    Focus = new Attribute(Color.BrightYellow, Color.Black)
+                }
+            };
+            var turnInfoLabel = new Label("Current Turn: Player 1")
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightYellow, Color.Black)
+                }
+            };
+            turnInfoWindow.Add(turnInfoLabel);
+            gameWindow.Add(turnInfoWindow);
+
+            // Store reference to static field
+            GameScreen.turnInfoLabel = turnInfoLabel;
+
+            // Shotgun ASCII Window (below Turn Info)
+            var shotgunWindow = new FrameView("Shotgun")
+            {
+                X = 0,
+                Y = 16,
+                Width = Dim.Fill(),
+                Height = 8,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightMagenta, Color.Black),
+                    Focus = new Attribute(Color.BrightMagenta, Color.Black)
+                }
+            };
+
+            string shotgun = "";
+
+            var shotgunAscii = new Label(shotgun)
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightMagenta, Color.Black)
+                }
+            };
+            shotgunWindow.Add(shotgunAscii);
+            gameWindow.Add(shotgunWindow);
+
+            // Store reference to static field
+            GameScreen.shotgunLabel = shotgunAscii;
+
+            // Message Window (below Shotgun)
+            var messageWindow = new FrameView("Message")
+            {
+                X = 0,
+                Y = 24,
+                Width = Dim.Fill(),
+                Height = 4,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightRed, Color.Black),
+                    Focus = new Attribute(Color.BrightRed, Color.Black)
+                }
+            };
+            var messageLabel = new Label("")
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.BrightRed, Color.Black)
+                }
+            };
+            messageWindow.Add(messageLabel);
+            gameWindow.Add(messageWindow);
+
+            // Store reference to static field
+            GameScreen.messageLabel = messageLabel;
+
+            // Add output window for program output (below message window)
+            var outputWindow = new TextView()
+            {
+                X = 0,
+                Y = 28,
+                Width = Dim.Fill(),
+                Height = Dim.Fill() - 31,
+                ReadOnly = true,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black)
+                }
+            };
+            outputWindow.Text = "=== Game Output ===\n";
+            gameWindow.Add(outputWindow);
+
+            // Store reference to static field
+            GameScreen.outputWindow = outputWindow;
+
+            // Create input handler
+            var inputHandler = new Input();
+
+            // Store reference to static field
+            GameScreen.inputHandler = inputHandler;
+
+            // Add label for game input
+            var gameInputLabel = new Label("Enter command:")
+            {
+                X = 1,
+                Y = Pos.AnchorEnd(2)
+            };
+            gameWindow.Add(gameInputLabel);
+
+            // Add text field for user input in game
+            var gameTextField = new TextField("")
+            {
+                X = Pos.Right(gameInputLabel) + 1,
+                Y = Pos.AnchorEnd(2),
+                Width = 15,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black),
+                    Focus = new Attribute(Color.BrightYellow, Color.Black),
+
+                }
+            };
+
+            // Handle Enter key press in game text field
+            gameTextField.KeyPress += (e) =>
+            {
+                if (e.KeyEvent.Key == Key.Enter)
+                {
+                    // Only capture and store input
+                    inputHandler.SetInput(gameTextField.Text.ToString() ?? "");
+
+                    // Log to output window
+                    outputWindow.Text += $"Input: {gameTextField.Text}\n";
+
+                    // Clear text field
+                    gameTextField.Text = "";
+
+                    // Notify controller that input was received
+                    onInputReceived?.Invoke();
+
+                    e.Handled = true;
+                }
+            };
+
+            gameWindow.Add(gameTextField);
+
+            // Add quit button at the bottom
+            var quitBtn = new Button("Quit")
+            {
+                X = Pos.Center(),
+                Y = Pos.AnchorEnd(1),
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    Focus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black),
+                    HotNormal = Application.Driver.MakeAttribute(Color.White, Color.Black),
+                    HotFocus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black)
+                }
+            };
+            quitBtn.Clicked += () =>
+            {
+                Application.RequestStop();
+            };
+            gameWindow.Add(quitBtn);
+
+            return gameWindow;
+        }
+    }
+}

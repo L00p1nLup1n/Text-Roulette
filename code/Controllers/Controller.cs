@@ -40,8 +40,7 @@
 //     }
 namespace Text_Roulette.code.Controllers
 {
-    using System.Collections;
-    using System.Runtime.InteropServices;
+
     using Text_Roulette.code.Models;
     using Text_Roulette.code.Views;
     public class Controller

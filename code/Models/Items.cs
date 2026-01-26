@@ -12,16 +12,15 @@ namespace Text_Roulette.code.Models
         }
 
 
-        public string itemEffect(string itemUsed)
-        {
-            switch (itemUsed)
-            {
-                case "beer":
-                    return "shotgun";
-
-            }
-            return "no";
-        }
+        // public string itemEffect(string itemUsed)
+        // {
+        //     switch (itemUsed)
+        //     {
+        //         case "beer":
+        //             return "shotgun";
+        //     }
+        //     return "no";
+        // }
 
 
     }

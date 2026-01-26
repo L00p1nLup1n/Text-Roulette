@@ -1,0 +1,7 @@
+Welcome to Text Roulette
+This game is played with 2 players
+There are blanks and live shells in the shotgun, loaded in random order
+Type 'me' to shoot yourself, 'you' to shoot the other player
+Shooting yourself with a blank will skip the other player's turn
+
+Press any key to return to main menu...
