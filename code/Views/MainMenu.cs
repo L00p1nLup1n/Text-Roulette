@@ -1,19 +1,10 @@
 namespace Text_Roulette.code.Views
 {
-    using System.Security.Cryptography.X509Certificates;
     using Terminal.Gui;
 
     class MainMenu
     {
-        private static Action? onGameStart;
-
-        // Set callback for when game starts
-        public static void SetGameStartCallback(Action callback)
-        {
-            onGameStart = callback;
-        }
-
-        public static void Show()
+        public static void Show(GameScreen gameScreen, Action onGameStart)
         {
             Application.Init();
             var top = Application.Top;
@@ -24,8 +15,8 @@ namespace Text_Roulette.code.Views
             {
                 X = 0,
                 Y = 0,
-                Width = Dim.Fill(),   // Use the full width of the terminal
-                Height = Dim.Fill()   // Use the full height of the terminal
+                Width = Dim.Fill(),
+                Height = Dim.Fill()
             };
 
             // Load and display banner
@@ -47,10 +38,9 @@ namespace Text_Roulette.code.Views
             };
             mainWindow.Add(banner);
 
-            // Add a label to the main window
             var label = new Label("Welcome to Text Roulette, type 'start' to begin")
             {
-                X = Pos.Center(),     // Center the label horizontally
+                X = Pos.Center(),
                 Y = Pos.Bottom(banner) + 1
             };
             mainWindow.Add(label);
@@ -71,7 +61,6 @@ namespace Text_Roulette.code.Views
                 {
                     Normal = new Attribute(Color.White, Color.Black),
                     Focus = new Attribute(Color.BrightYellow, Color.Black),
-
                 }
             };
 
@@ -91,7 +80,7 @@ namespace Text_Roulette.code.Views
             }
             catch
             {
-                aboutText = "About Text Roulette"; // Fallback if file not found
+                aboutText = "About Text Roulette";
             }
 
             var aboutLabel = new Label(aboutText)
@@ -101,7 +90,6 @@ namespace Text_Roulette.code.Views
             };
             aboutWindow.Add(aboutLabel);
 
-            // Handle key press to exit about window
             aboutWindow.KeyPress += (e) =>
             {
                 Application.Top.Remove(aboutWindow);
@@ -110,8 +98,8 @@ namespace Text_Roulette.code.Views
                 e.Handled = true;
             };
 
-            // Create game window using GameScreen
-            var gameWindow = GameScreen.CreateGameWindow();
+            // Create game window
+            var gameWindow = gameScreen.CreateGameWindow();
 
             // Handle Enter key press in text field
             textField.KeyPress += (e) =>
@@ -124,8 +112,7 @@ namespace Text_Roulette.code.Views
                         Application.Top.Add(gameWindow);
                         Application.Refresh();
 
-                        // Start the game
-                        onGameStart?.Invoke();
+                        onGameStart();
                     }
                     else if (textField.Text.ToLower() == "about")
                     {
@@ -158,13 +145,8 @@ namespace Text_Roulette.code.Views
             };
             mainWindow.Add(textField);
 
-            // Add the main window to the application
             Application.Top.Add(mainWindow);
-
-            // Run the application
             Application.Run();
-
-            // Shutdown when done
             Application.Shutdown();
         }
     }
