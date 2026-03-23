@@ -1,6 +1,6 @@
 namespace Text_Roulette.code.Views
 {
-    using Text_Roulette.code.Models;
+    using Text_Roulette.code.Models.Game;
 
     public interface IGameView
     {

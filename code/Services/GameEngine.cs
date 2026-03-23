@@ -1,6 +1,7 @@
 namespace Text_Roulette.code.Services
 {
-    using Text_Roulette.code.Models;
+    using Text_Roulette.code.Models.Game;
+
 
     public class GameEngine
     {
@@ -9,10 +10,10 @@ namespace Text_Roulette.code.Services
         public GameState StartNewGame()
         {
             game = new Game();
-            game.createPlayers();
+            game.CreatePlayers();
             game.shotgun.Load();
 
-            return BuildState("Game started!");
+            return BuildState("", "Game started!");
         }
 
         public GameState ProcessCommand(string command)
@@ -29,8 +30,13 @@ namespace Text_Roulette.code.Services
             {
                 game.rounds++;
                 game.shotgun.difficulty++;
+                game.GenerateItems();
                 game.shotgun.Load();
                 reloaded = true;
+                if (game.rounds == 1)
+                {
+                    return BuildState(logMessage, "Items now generated each round! Use 'items' to view.\n");
+                }
             }
 
             return new GameState
@@ -49,11 +55,12 @@ namespace Text_Roulette.code.Services
                 GameOver = result.Player1Health <= 0 || result.Player2Health <= 0,
                 Winner = result.Player1Health <= 0 ? 2
                        : result.Player2Health <= 0 ? 1
-                       : null
+                       : null,
+                Info = result.Info
             };
         }
 
-        private GameState BuildState(string message)
+        private GameState BuildState(string message, string info = "")
         {
             return new GameState
             {
@@ -64,11 +71,11 @@ namespace Text_Roulette.code.Services
                 Difficulty = game.shotgun.difficulty,
                 LiveRounds = game.shotgun.liveRounds,
                 BlankRounds = game.shotgun.blanks,
-                GunState = GunState.Standard,
                 Message = message,
                 ShotgunReloaded = false,
                 GameOver = false,
-                Winner = null
+                Winner = null,
+                Info = info
             };
         }
     }

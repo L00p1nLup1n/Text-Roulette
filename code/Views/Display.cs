@@ -1,6 +1,6 @@
 namespace Text_Roulette.code.Views
 {
-    using Text_Roulette.code.Models;
+    using Text_Roulette.code.Models.Game;
     using Text_Roulette.code.Services;
 
     public class Display : IGameView
