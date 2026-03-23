@@ -44,3 +44,5 @@
 *.classpath
 *.project
 .zed
+CLAUDE.md
+.omc
