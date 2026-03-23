@@ -5,8 +5,8 @@ namespace Text_Roulette.code.Models
         public Player[] players = new Player[2];
         public int currentPlayer = 0;
         public int rounds;
-        string results = "";
         public Shotgun shotgun = new();
+        private GunState gunState = GunState.Standard;
 
         public Stack<Items.itemName> inventory = new();
 
@@ -15,62 +15,58 @@ namespace Text_Roulette.code.Models
             players[0] = new Player(1);
             players[1] = new Player(2);
         }
-        public Output Gameplay(Input? input, Output output)
-        {
 
-            switch (input?.GetInput())
+        public GameResult Gameplay(string command)
+        {
+            string message;
+
+            switch (command)
             {
                 case "me":
-                    results = shotgun.FireAt(players[currentPlayer]);
-                    output.message = results;
+                    message = shotgun.FireAt(players[currentPlayer]);
                     if (shotgun.isLiveFired)
                     {
-                        output.whichPlayerTurn = OtherPlayer();
-                        SwitchPlayer();
+                        currentPlayer = OtherPlayer();
                     }
-                    else
-                    {
-                        output.whichPlayerTurn = currentPlayer;
-                    }
-                    output.GunState = Output.GunStateEnum.standard;
+                    gunState = GunState.Standard;
                     break;
                 case "you":
-                    results = shotgun.FireAt(players[OtherPlayer()]);
-                    output.message = results;
-                    output.whichPlayerTurn = OtherPlayer();
+                    message = shotgun.FireAt(players[OtherPlayer()]);
                     SwitchPlayer();
-                    output.GunState = Output.GunStateEnum.standard;
+                    gunState = GunState.Standard;
                     break;
                 case "cmd":
-                    results = "Type 'y' to shoot the other player \n'm' to shoot yourself";
-                    output.message = results;
+                    message = "Type 'y' to shoot the other player \n'm' to shoot yourself";
                     break;
                 case "saw":
                     shotgun.isSawnOff = true;
-                    output.GunState = Output.GunStateEnum.sawnOff;
-                    results = "The barrel is sawn off, dealing 2 damage for 1 turn!";
-                    output.message = results;
+                    gunState = GunState.SawnOff;
+                    message = "The barrel is sawn off, dealing 2 damage for 1 turn!";
                     break;
                 case "glass":
-                    if (output.GunState == Output.GunStateEnum.sawnOff)
+                    if (gunState == GunState.SawnOff)
                     {
-                        output.GunState = (shotgun.ViewCurrentShell() == "Live") ? Output.GunStateEnum.sawnOffIsLive : Output.GunStateEnum.sawnOffIsBlank;
+                        gunState = (shotgun.ViewCurrentShell() == "Live") ? GunState.SawnOffIsLive : GunState.SawnOffIsBlank;
                     }
-                    else output.GunState = (shotgun.ViewCurrentShell() == "Live") ? Output.GunStateEnum.isLive : Output.GunStateEnum.isBlank;
-                    results = "Player " + players[currentPlayer].playerID + " peeked inside the chamber";
-                    output.message = results;
+                    else
+                    {
+                        gunState = (shotgun.ViewCurrentShell() == "Live") ? GunState.IsLive : GunState.IsBlank;
+                    }
+                    message = "Player " + players[currentPlayer].playerID + " peeked inside the chamber";
                     break;
-
                 default:
-                    results = "Invalid input!";
-                    output.message = results;
+                    message = "Invalid input!";
                     break;
             }
-            output.player1Health = players[0].GetHealth();
-            output.player2Health = players[1].GetHealth();
 
-
-            return output;
+            return new GameResult
+            {
+                Message = message,
+                CurrentPlayer = currentPlayer,
+                Player1Health = players[0].GetHealth(),
+                Player2Health = players[1].GetHealth(),
+                GunState = gunState
+            };
         }
 
         public int OtherPlayer()
