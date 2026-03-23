@@ -1,6 +1,6 @@
 namespace Text_Roulette.code.Models
 {
-    public enum GunState
+    public enum ShotgunState
     {
         Standard,
         IsBlank,

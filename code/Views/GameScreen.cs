@@ -1,7 +1,7 @@
 namespace Text_Roulette.code.Views
 {
     using Terminal.Gui;
-    using Text_Roulette.code.Models;
+    using Text_Roulette.code.Models.Game;
     using Text_Roulette.code.Services;
 
     public class GameScreen
@@ -14,6 +14,7 @@ namespace Text_Roulette.code.Views
         private Label? playerStatsLabel;
         private Label? turnInfoLabel;
         private Label? shotgunLabel;
+        private Label? infoLabel;
         private Label? messageLabel;
         public Window Window { get; private set; } = null!;
 
@@ -44,7 +45,8 @@ namespace Text_Roulette.code.Views
             if (shotgunLabel != null)
                 shotgunLabel.Text = _assetLoader.GetShotgunArt(state.GunState);
 
-
+            if (infoLabel != null)
+                infoLabel.Text = state.Info;
         }
 
         public Window CreateGameWindow()
@@ -165,13 +167,38 @@ namespace Text_Roulette.code.Views
             gameWindow.Add(shotgunWindow);
             shotgunLabel = shotgunAscii;
 
+            // Info Window
+            var infoWindow = new FrameView("Info")
+            {
+                X = 0,
+                Y = 29,
+                Width = Dim.Fill(),
+                Height = 24,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black),
+                    Focus = new Attribute(Color.White, Color.Black)
+                }
+            };
+            infoLabel = new Label("")
+            {
+                X = 1,
+                Y = 0,
+                ColorScheme = new ColorScheme()
+                {
+                    Normal = new Attribute(Color.White, Color.Black)
+                }
+            };
+            infoWindow.Add(infoLabel);
+            gameWindow.Add(infoWindow);
+
             // Message Window
             var messageWindow = new FrameView("Message")
             {
                 X = 0,
                 Y = 24,
                 Width = Dim.Fill(),
-                Height = 4,
+                Height = 5,
                 ColorScheme = new ColorScheme()
                 {
                     Normal = new Attribute(Color.BrightRed, Color.Black),

@@ -1,4 +1,4 @@
-namespace Text_Roulette.code.Models
+namespace Text_Roulette.code.Models.Game
 {
     public class GameState
     {
@@ -9,11 +9,12 @@ namespace Text_Roulette.code.Models
         public int Difficulty { get; init; }
         public int LiveRounds { get; init; }
         public int BlankRounds { get; init; }
-        public GunState GunState { get; init; } = GunState.Standard;
+        public ShotgunState GunState { get; init; } = ShotgunState.Standard;
         public string Message { get; init; } = "";
         public string? LogMessage { get; init; }
         public bool ShotgunReloaded { get; init; }
         public bool GameOver { get; init; }
         public int? Winner { get; init; }
+        public string Info { get; init; } = "";
     }
 }

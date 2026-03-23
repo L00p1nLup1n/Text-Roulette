@@ -63,7 +63,7 @@ namespace Text_Roulette.code.Models
                 firedRounds++;
                 liveRounds--;
                 isLiveFired = true;
-                target.SetHealth(target.GetHealth() - 2);
+                target.TakeDamage(2);
                 isSawnOff = false;
                 return "*BANG!!!";
 
@@ -73,7 +73,7 @@ namespace Text_Roulette.code.Models
                 firedRounds++;
                 liveRounds--;
                 isLiveFired = true;
-                target.SetHealth(target.GetHealth() - 1);
+                target.TakeDamage(1);
                 isSawnOff = false;
                 return "*Bang!";
             }

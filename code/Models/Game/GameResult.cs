@@ -1,4 +1,4 @@
-namespace Text_Roulette.code.Models
+namespace Text_Roulette.code.Models.Game
 {
     public class GameResult
     {
@@ -6,6 +6,7 @@ namespace Text_Roulette.code.Models
         public int CurrentPlayer { get; init; }
         public int Player1Health { get; init; }
         public int Player2Health { get; init; }
-        public GunState GunState { get; init; } = GunState.Standard;
+        public ShotgunState GunState { get; init; } = ShotgunState.Standard;
+        public string Info { get; init; } = "";
     }
 }
